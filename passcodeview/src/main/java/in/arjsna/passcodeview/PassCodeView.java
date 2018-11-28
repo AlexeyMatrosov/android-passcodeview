@@ -399,6 +399,8 @@ public class PassCodeView extends View {
       if (keyRect.rect.contains(downEventX, downEventY) && keyRect.rect.contains(upEventX,
           upEventY)) {
         keyRect.playRippleAnim(new KeyRect.RippleAnimListener() {
+          private String currentPassCode;
+
           @Override public void onStart() {
             int length = passCodeText.length();
             if (keyRect.value.equals(eraseChar)) {
@@ -410,11 +412,13 @@ public class PassCodeView extends View {
               passCodeText = passCodeText + keyRect.value;
               setFilledCount(passCodeText.length());
             }
+
+            currentPassCode = passCodeText;
           }
 
           @Override public void onEnd() {
             if (!keyRect.value.isEmpty()) {
-              notifyListener();
+              notifyListener(currentPassCode);
             }
           }
         });
@@ -459,9 +463,9 @@ public class PassCodeView extends View {
     }
   }
 
-  private void notifyListener() {
+  private void notifyListener(String currentCodeText) {
     if (textChangeListener != null) {
-      textChangeListener.onTextChanged(passCodeText);
+      textChangeListener.onTextChanged(currentCodeText);
     }
   }
 
